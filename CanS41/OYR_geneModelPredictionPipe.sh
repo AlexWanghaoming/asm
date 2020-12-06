@@ -1,5 +1,7 @@
 #!/bin/bash
 ref=/disk/alpha/OYR/OYR.fasta
+
+############################## strategy: EVM_modeler
 #mkdir RNAseq/star_index
 #STAR --runThreadN 14 --runMode genomeGenerate --genomeDir RNAseq/star_index --genomeFastaFiles ${ref}
 array=(67-1_24a 67-1_48a 67-1_8a C-24-1 C-8-1 S-24-1 S-8-1 MeOH_rep1 DON_rep2 PG_rep1)
@@ -67,3 +69,11 @@ python3 ~/bin/gtfUtils.py -i EVM.all.reformat.gtf -r S41_ -o S41.gtf
 gffread -y S41.protein.fasta -T S41.gtf -g OYR.fasta
 awk '/>/{split($2,a,"=");print ">"a[2];next}{print}' S41.protein.fasta > S41_protein.fasta
 rm S41.protein.fasta
+
+############# strategy 2: Only braker
+braker.pl --fungus --cores 14 --etpmode --softmasking --gff3 --genome=${MASKED_GENOME} --prot_seq=${ortho_protein} --bam=RNAseq/67-1_24a.sorted.bam,RNAseq/67-1_48a.sorted.bam,RNAseq/67-1_8a.sorted.bam,RNAseq/C-24-1.sorted.bam,RNAseq/S-24-1.sorted.bam,RNAseq/C-8-1.sorted.bam,RNAseq/S-8-1.sorted.bam,RNAseq/DON_rep2.sorted.bam,RNAseq/MeOH_rep1.sorted.bam,RNAseq/PG_rep1.sorted.bam
+python3 ~/bin/gtfUtils.py -i braker/braker.gtf -reformat > CanS41.gtf
+python3 ~/bin/gtfUtils.py -i CanS41.gtf -len 150 -o CanS41_filter.gtf
+python3 ~/bin/gtfUtils.py -i CanS41_filter.gtf -p -o CanS41_primaryTrans.gtf
+awk '!/>/{gsub("\\.","",$0);print$0;next}{print}' CanS41.protein.fasta > CanS41_protein.fasta
+rm CanS41.protein.fasta
