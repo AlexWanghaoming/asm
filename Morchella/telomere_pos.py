@@ -43,7 +43,7 @@ if __name__ == '__main__':
 	# telo_str2 =
 	max_telo_distance = 50000
 	res = find_telo(fa, telo_str1)
-	with open("/Users/alexwang/0data/0mango/genome/telo/%s.telo.txt" % sys.argv[1].split(".")[0],"w") as final:
+	with open("/Users/alexwang/0data/Morchella/%s.telo.txt" % sys.argv[1].split(".")[0],"w") as final:
 #	with open("%s.telo.txt" % (sys.argv[1].split(".")[0]+"."+sys.argv[1].split(".")[1]),"w") as final:
 		final.writelines("\t".join(["ref","chr_len", "left", "right"])+"\n")
 		final.writelines(str(key)+"\t"+str(value[0])+"\t"+str(value[1])+"\t"+str(value[2])+"\n" for key,value in res.items())
